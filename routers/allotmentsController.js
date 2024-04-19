@@ -58,7 +58,7 @@ router.post('/sendMails/:topicId', async (req, res) => {
     }
     const emailsSent = await Promise.all(topic.author_works.map(async (author_works) => {
         const acceptLinks = author_works.reviewers.map(reviewer => {
-            return `http://localhost:3000/review-paper2?reviewerId=${reviewer._id}&authorWorkId=${author_works._id}`;
+            return `https://mellow-gnome-9a4d4c.netlify.app/review-paper2?reviewerId=${reviewer._id}&authorWorkId=${author_works._id}`;
         });
 
         const rejectLinks = author_works.reviewers.map(reviewer => {
