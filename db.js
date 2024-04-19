@@ -4,7 +4,10 @@ require('dotenv').config();
 
 //const dburl='mongodb+srv://ghoruipratanu:zdk0HiTR6lf42ZmF@conferencemanagementsys.m2uokxu.mongodb.net/';
 const mongodbUrl=process.env.DBURL;
-mongoose.connect(mongodbUrl);
+mongoose.connect(mongodbUrl,{
+    useNewUrlParser:true,
+    useUnifiedTopology:true
+});
 const db=mongoose.connection;
 db.on('connected',()=>{
     console.log('connected to mongodb server');
