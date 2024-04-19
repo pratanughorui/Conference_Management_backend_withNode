@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const app=express();
 app.use(cors({
-    origin: 'http://localhost:3000'||'https://mellow-gnome-9a4d4c.netlify.app/'  // Replace with the actual frontend URL
+    origin:'https://mellow-gnome-9a4d4c.netlify.app/'  // Replace with the actual frontend URL
   }));
 app.use(bodyparser.json());
 
