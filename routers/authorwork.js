@@ -15,7 +15,7 @@ const author_work=require('../models/authors_work_model');
 // }
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // Save uploaded files to the 'uploads' directory
+        cb(null, path.resolve('./uploads/')); // Save uploaded files to the 'uploads' directory
     },
     filename: function (req, file, cb) {
          // Save the original filename for now
