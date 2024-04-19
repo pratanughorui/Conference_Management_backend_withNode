@@ -2,11 +2,12 @@ const express=require('express');
 const cors = require('cors');
 const db=require('./db');
 const bodyparser=require('body-parser');
+require('dotenv').config();
 
 
 const app=express();
 app.use(cors({
-    origin: 'http://localhost:3000' // Replace with the actual frontend URL
+    origin:process.env.FRONTURL  // Replace with the actual frontend URL
   }));
 app.use(bodyparser.json());
 
@@ -47,7 +48,7 @@ app.use('/paper',allotments);
 
 
 
-const port=3030;
+const port=process.env.PORT||3030;
 app.listen(port,()=>{
     console.log('running.....');
 })

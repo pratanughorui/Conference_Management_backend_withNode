@@ -1,6 +1,7 @@
 const express=require('express');
 const router=express.Router();
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 const fs = require('fs');
 const path = require('path');
@@ -9,8 +10,8 @@ const Topic=require('../models/topics_model');
 const transporter = nodemailer.createTransport({
     service: 'gmail',  // Example using Gmail; configure according to your provider
     auth: {
-        user: 'ghoruipratanu@gmail.com',
-        pass: 'rjul wrgh cloy burl'
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
     }
 });
 router.post('/allotments',async(req,res)=>{
@@ -64,7 +65,7 @@ router.post('/sendMails/:topicId', async (req, res) => {
             return `http://example.com/reject?reviewerId=${reviewer._id}&authorWorkId=${author_works._id}`;
         });
         const mailOptions = {
-            from: 'ghoruipratanu@gmail.com',
+            from: process.env.EMAIL,
             to: author_works.reviewers.map(r => r.email).join(','),  // Send to all reviewers
             //Request to review the following paper
             subject: `Request to review the following paper`,
