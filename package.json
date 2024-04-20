@@ -13,6 +13,8 @@
     "cloudinary": "^2.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "email-validator": "^2.0.4",
+    "email-verifier": "^0.4.1",
     "express": "^4.19.2",
     "mongoose": "^8.3.2",
     "multer": "^1.4.5-lts.1",

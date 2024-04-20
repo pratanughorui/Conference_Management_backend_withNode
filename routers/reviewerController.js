@@ -4,6 +4,7 @@ const Reviewer=require('../models/reviewers_model')
 const Track=require('../models/tracks_model');
 const author_work=require('../models/authors_work_model');
 const reviewes=require('../models/reviewes_model');
+const emailverify=require('../helper/emailverification');
 const Conference=require('../models/conference_model');
 const bodyParser = require('body-parser');
 
@@ -20,11 +21,18 @@ router.post('/create/:track_id', async (req, res) => {
             const { name, affiliation, country, password, mobile, email } = reviewerData;
 
             // 1. Validate email address - For simplicity, we assume it's valid here
+            if(!emailverify(email)){
+                return res.status(400).json({ error: `email is not valid` });
+            }
 
             // 2. Check if reviewer with the provided email already exists
+            const track = await Track.findById(trackId);
+            if (!track) {
+                return res.status(404).json({ error: 'Track not found' });
+            }
             const existingReviewer = await Reviewer.findOne({ email });
-            if (existingReviewer) {
-                return res.status(400).json({ error: `Reviewer with email ${email} already exists` });
+            if (existingReviewer && track.reviewers.includes(existingReviewer._id)) {
+                return res.status(400).json({ error: `Reviewer already exists` });
             }
 
             // 3. If email is genuine and reviewer doesn't exist, save to the database
@@ -32,10 +40,7 @@ router.post('/create/:track_id', async (req, res) => {
             const savedReviewer = await newReviewer.save();
 
             // 4. Retrieve the track using the provided track ID
-            const track = await Track.findById(trackId);
-            if (!track) {
-                return res.status(404).json({ error: 'Track not found' });
-            }
+            
 
             // Add the ID of the newly created reviewer to the track's reviewers array
             track.reviewers.push(savedReviewer._id);
