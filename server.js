@@ -23,10 +23,12 @@ const conferenceroutes=require('./routers/conferenceRouting');
 const authorsroutes=require('./routers/authorwork');
 const reviewerroutes=require('./routers/reviewerController')
 const allotments=require('./routers/allotmentsController')
+const committee=require('./routers/committeeController');
 app.use('/conference',conferenceroutes);
 app.use('/author',authorsroutes);
 app.use('/reviewer',reviewerroutes);
 app.use('/paper',allotments);
+app.use('/committee',committee);
 
 
 

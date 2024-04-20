@@ -4,6 +4,7 @@ const Reviewer=require('../models/reviewers_model')
 const Track=require('../models/tracks_model');
 const author_work=require('../models/authors_work_model');
 const reviewes=require('../models/reviewes_model');
+const Conference=require('../models/conference_model');
 const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
@@ -97,6 +98,31 @@ router.post('/reviewsubmit', async (req, res) => {
         
     }
 });
+
+// router.get('/getallreviewers/:id', async (req, res) => {
+//     try {
+//         const id = req.params.id;
+//         const conference = await Conference.findById(id);
+
+//         if (!conference) {
+//             return res.status(404).json({ error: 'Conference not found' });
+//         }
+
+//         // Extracting reviewers from all tracks
+//         // const allReviewers = conference.tracks.reduce((reviewers, track) => {
+//         //     return [...reviewers, ...track.reviewers];
+//         // }, []);
+//         console.log(conference.tracks);
+//         const reviewerIds = conference.tracks.reduce((ids, track) => {
+//             return [...ids, ...track.reviewers];
+//         }, []);
+
+//         return res.status(200).json(reviewerIds);
+//     } catch (error) {
+//         console.error('Error fetching reviewers:', error);
+//         return res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
 
 
 

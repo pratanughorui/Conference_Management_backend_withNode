@@ -98,20 +98,21 @@ router.get('/getpdf/:authorworkId',async(req,res)=>{
             return res.status(404).json({ error: 'Author work not found' });
         }
 
-        const pdfFilename = authorwork.pdf;
+        const pdfFilename = authorwork.pdfLink;
         if (!pdfFilename) {
             return res.status(404).json({ error: 'PDF file not found for this author work' });
         }
 
-        const filePath = path.join(__dirname, '..', 'uploads', pdfFilename);
-        if (!fs.existsSync(filePath)) {
-            return res.status(404).json({ error: 'PDF file not found in the uploads directory' });
-        }
+        // const filePath = path.join(__dirname, '..', 'uploads', pdfFilename);
+        // if (!fs.existsSync(filePath)) {
+        //     return res.status(404).json({ error: 'PDF file not found in the uploads directory' });
+        // }
 
-        // Stream the PDF file to the response
-        const stream = fs.createReadStream(filePath);
-        stream.pipe(res);
+        // // Stream the PDF file to the response
+        // const stream = fs.createReadStream(filePath);
+        // stream.pipe(res);
 
+        res.status(200).json({pdfUrl:pdfFilename});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });

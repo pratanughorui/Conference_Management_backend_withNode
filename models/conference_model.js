@@ -54,6 +54,10 @@ const conference=new mongoose.Schema({
     author_works:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Paper'
+    }],
+    committee:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Committee'
     }]
 
     

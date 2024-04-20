@@ -42,6 +42,10 @@ const paperSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    pdfLink:{
+    type:String,
+    required: true
+    },
     co_authors: [{
         name: { type: String, required: true },
         affiliation: { type: String, required: true },
