@@ -14,7 +14,7 @@ const uploadFile = async (filePath) => {
             secure: true,
         });
         console.log(result);
-        return result.url;
+        return result.secure_url;
     } catch (error) {
         console.error("Error uploading file:", error.message);
     }

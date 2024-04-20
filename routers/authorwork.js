@@ -71,7 +71,7 @@ router.post('/upload/:topicid/:conferenceid', upload.single('pdf'), async (req, 
 
         const topic_id = req.params.topicid;
         const topic = await Topic.findById(topic_id);
-        res.status(200).json({ message: 'paper submitted successfully' });
+       // res.status(200).json({ message: 'paper submitted successfully' });
         if (!topic) {
             return res.status(404).json({ error: 'Topic not found' });
         }
@@ -84,7 +84,8 @@ router.post('/upload/:topicid/:conferenceid', upload.single('pdf'), async (req, 
         await conference.save();
 
         // console.log("Data saved successfully");
-        res.status(200).json({ message: 'Tracks added successfully'});
+        //res.status(200).json({ message: 'Tracks added successfully'});
+         return res.status(201).json({ message: 'paper submitted successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
