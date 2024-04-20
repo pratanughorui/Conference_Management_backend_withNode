@@ -129,6 +129,36 @@ router.post('/reviewsubmit', async (req, res) => {
 //     }
 // });
 
-
+router.get('/allreviewersexcurr/:id', async (req, res) => {
+    try {
+        const conid = req.params.id;
+        const conferences = await Conference.find({ _id: { $ne: conid } })
+        .populate({
+            path: 'tracks',
+            populate: {
+                path: 'reviewers'
+            }
+        });
+        
+        if (conferences.length > 0) { // Check if conferences array is not empty
+            let allReviewers = [];
+            // Iterate through each conference
+            conferences.forEach(conference => {
+                // Iterate through each track in the conference
+                conference.tracks.forEach(track => {
+                    // Add reviewers from each track to the allReviewers array
+                    allReviewers.push(...track.reviewers);
+                });
+            });
+            // Send the array of reviewers as the response
+            res.json(allReviewers);
+        } else {
+            res.status(404).json({ error: 'No conferences found' });
+        }
+    } catch (error) {
+        console.error("Error fetching conferences:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports=router;

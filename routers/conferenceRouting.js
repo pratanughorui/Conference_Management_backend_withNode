@@ -8,14 +8,15 @@ const { populate } = require('../models/authors_work_model');
 //-------------------------------------
 router.post('/create',async(req,res)=>{
     try {
-        console.log("fff");
+       // console.log("fff");
      const con=req.body;
      const newconference=new Conference(con);
      const conf=await newconference.save();
-     console.log("data saved");
+    // console.log("data saved");
      res.status(200).json(conf);
     } catch (error) {
-      console.log(error);
+      console.error("Error creating conference:", error);
+      res.status(500).json({ error: 'Internal server error' });
     }
  })
 
