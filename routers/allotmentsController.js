@@ -70,10 +70,11 @@ router.post('/sendMails/:topicId', async (req, res) => {
             //Request to review the following paper
             subject: `Request to review the following paper`,
             text: `Title: ${author_works.title} \n Paper ID: ${author_works._id} \n Author: ${author_works.name} \n Last date of review:${date} \n Abstract: ${author_works.abstract}.\n\nMessage:\n\nThank you for your willingness to serve as a reviewer. Peer review is one of the most important activities of our Society, and your help is appreciated. Written comments are usually the most helpful part of a review. Please provide comments on the second page or on separate sheets. The grading section below is intended to help identify key points for written comments, and also to allow comparisons among different reviewers. A good paper should have a high overall score, but does not have to score well in all aspects to be acceptable. For example, a concise, critical review paper is a valuable publication, although it might have little intrinsic originality. A paper that introduces important new concepts might be valuable even with limited experimental work.\n\nAccept Review: ${acceptLinks}\nReject Review: ${rejectLinks}\n\nBest regards,\nYour Organization\nsend by:${name}\ndesignation:${designation}`,
-            attachments: [{
-                filename: 'document.pdf',
-                path: `uploads/${author_works.pdf}`  // Adjust the path as necessary
-            }]
+            
+            // attachments: [{
+            //     filename: 'document.pdf',
+            //     path: `uploads/${author_works.pdf}`  // Adjust the path as necessary
+            // }]
         };
 
         return transporter.sendMail(mailOptions);
