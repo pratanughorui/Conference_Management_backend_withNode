@@ -71,7 +71,7 @@ router.post('/upload/:topicid/:conferenceid', upload.single('pdf'), async (req, 
 
         const topic_id = req.params.topicid;
         const topic = await Topic.findById(topic_id);
-        
+        res.status(200).json({ message: 'paper submitted successfully' });
         if (!topic) {
             return res.status(404).json({ error: 'Topic not found' });
         }
