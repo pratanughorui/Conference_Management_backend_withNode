@@ -10,7 +10,9 @@ cloudinary.config({
 const uploadFile = async (filePath) => {
     try {
 //filePath+='.pdf';
-        const result = await cloudinary.uploader.upload(filePath);
+        const result = await cloudinary.uploader.upload(filePath,{
+            secure: true,
+        });
         console.log(result);
         return result.url;
     } catch (error) {
