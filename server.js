@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const app=express();
 app.use(cors({
-    origin: 'http://localhost:3030' //process.env.FRONTURL  // Replace with the actual frontend URL
+    origin: 'http://localhost:3000' //process.env.FRONTURL  // Replace with the actual frontend URL
   }));
 app.use(bodyparser.json());
 
