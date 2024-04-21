@@ -64,7 +64,10 @@ router.get('/getconferencebyid/:id',async(req,res)=>{
           { path: 'topics', populate: { path: 'author_works' } },
           { path: 'reviewers' }
       ]
-  }).populate('committee');
+  }).populate({
+    path:'committee',
+    populate:'members'
+  });
   res.send(conference);
   } catch (error) {
    console.log(error);
