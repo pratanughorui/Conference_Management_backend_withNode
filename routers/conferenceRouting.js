@@ -37,35 +37,7 @@ router.post('/create',async(req,res)=>{
   })
 
  
-  router.put('/addtopics/:trackId', async (req, res) => {
-    try {
-        const { trackId } = req.params;
-        const { topics } = req.body;
-
-        // Find the track by ID
-        const track = await Track.findById(trackId);
-        if (!track) {
-            return res.status(404).json({ error: 'Track not found' });
-        }
-
-        // Create new topic documents and push their IDs to the track's topics array
-        const topicIds = [];
-        for (const topicData of topics) {
-            const newTopic = new Topic(topicData);
-            await newTopic.save();
-            track.topics.push(newTopic._id);
-            topicIds.push(newTopic._id);
-        }
-
-        // Save the updated track
-        await track.save();
-
-        res.status(200).json({ message: 'Topics added successfully', topicIds });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
+  
 
 
 
@@ -92,7 +64,7 @@ router.get('/getconferencebyid/:id',async(req,res)=>{
           { path: 'topics', populate: { path: 'author_works' } },
           { path: 'reviewers' }
       ]
-  });
+  }).populate('committee');
   res.send(conference);
   } catch (error) {
    console.log(error);
