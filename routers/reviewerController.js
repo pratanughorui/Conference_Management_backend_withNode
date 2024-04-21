@@ -31,8 +31,15 @@ router.post('/create/:track_id', async (req, res) => {
                 return res.status(404).json({ error: 'Track not found' });
             }
             const existingReviewer = await Reviewer.findOne({ email });
-            if (existingReviewer && track.reviewers.includes(existingReviewer._id)) {
-                return res.status(400).json({ error: `Reviewer already exists` });
+            if (existingReviewer ) {
+                if(track.reviewers.includes(existingReviewer._id)){
+                    return res.status(400).json({ error: `Reviewer already exists` });
+                }else{
+                    track.reviewers.push(existingReviewer._id);
+                      await track.save();
+                      return res.status(201).json({ message: 'Reviewers added successfully' });
+                }
+                
             }
 
             // 3. If email is genuine and reviewer doesn't exist, save to the database
