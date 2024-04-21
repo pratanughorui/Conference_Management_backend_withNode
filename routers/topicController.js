@@ -2,6 +2,7 @@ const express=require('express');
 const router=express.Router();
 const Conference=require('../models/conference_model');
 const Track=require('../models/tracks_model');
+const Topic=require('../models/topics_model')
 router.use(express.json());
 router.put('/addtopics/:trackId', async (req, res) => {
     try {
