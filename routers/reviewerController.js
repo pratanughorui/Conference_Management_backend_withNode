@@ -160,5 +160,50 @@ router.get('/allreviewersexcurr/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+router.get('/allreviewersbyconid/:id', async (req, res) => {
+    try {
+        const conid = req.params.id;
+        const conference = await Conference.findById(conid).populate({
+            path: 'tracks',
+            populate: {
+                path: 'reviewers'
+            }
+        });
+
+        if (conference) { // Check if conference is found
+            let allReviewers = [];
+            // Iterate through each track in the conference
+            conference.tracks.forEach(track => {
+                // Add reviewers from each track to the allReviewers array
+                allReviewers.push(...track.reviewers);
+            });
+            // Send the array of reviewers as the response
+            res.json(allReviewers);
+        } else {
+            res.status(404).json({ error: 'Conference not found' });
+        }
+    } catch (error) {
+        console.error("Error fetching conference:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/allreviewersbytrackid/:trackId', async (req, res) => {
+    try {
+        const id=req.params.trackId;
+        const track = await Track.findById(id).populate("reviewers");
+        if (track) {
+            res.json(track.reviewers);
+          } else {
+            // If committee is not found, send 404 Not Found
+            res.status(404).json({ error: 'Track not found' });
+          }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+})
 
 module.exports=router;
