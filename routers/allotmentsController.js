@@ -56,7 +56,7 @@ router.post('/sendMails/:topicId', async (req, res) => {
     if (!topic) {
         return res.status(404).json({ message: 'Topic not found' });
     }
-    const emailsSent = await Promise.all(topic.author_works.map(async (author_works) => {
+    const emailsSent = await Promise.all(topic.author_works.map(async (author_work) => {
         // const acceptLinks = author_works.reviewers.map(reviewer => {
         //     return `https://mellow-gnome-9a4d4c.netlify.app/review-paper2?reviewerId=${reviewer._id}&authorWorkId=${author_works._id}`;
         // });
