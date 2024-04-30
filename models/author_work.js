@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const paperSchema = new mongoose.Schema({
@@ -46,11 +45,11 @@ const paperSchema = new mongoose.Schema({
     required: true
     },
     co_authors: [{
-        name: { type: String },
-        affiliation: { type: String  },
-        country: { type: String },
+        name: { type: String, required: true },
+        affiliation: { type: String, required: true },
+        country: { type: String, required: true },
         contact_no: String,
-        email: { type: String },
+        email: { type: String, required: true },
         google_sh_id: { type: String, default: null },  // Optional
         orcid_id: { type: String, default: null }       // Optional
     }],
@@ -64,5 +63,5 @@ const paperSchema = new mongoose.Schema({
     }
 });
 
-const Paper = mongoose.model('Paper', paperSchema);
+const Paper = mongoose.model('author_work', paperSchema);
 module.exports = Paper;

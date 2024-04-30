@@ -30,7 +30,7 @@ const author_work=require('../models/authors_work_model');
 var upload = multer({
     storage: multer.diskStorage({})
 });
-router.post('/upload/:topicid/:conferenceid', upload.single('pdf'), async (req, res) => {
+router.post('/upload/:topicid/:conferenceid/:trackid', upload.single('pdf'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data);
         const { email } = data;
@@ -38,6 +38,7 @@ router.post('/upload/:topicid/:conferenceid', upload.single('pdf'), async (req, 
         console.log(req.file);
        
         // Check if the author already exists
+        const trackid=req.params.trackid;
         const conference_id = req.params.conferenceid;
         const conference = await Conference.findById(conference_id);
         
@@ -56,18 +57,12 @@ router.post('/upload/:topicid/:conferenceid', upload.single('pdf'), async (req, 
         const newWork = new author_work({
             ...data,
             pdf: req.file.filename, // Save the PDF filename to the database
-            pdfLink:link
+            pdfLink:link,
+            track:trackid
         });
         
          const response = await newWork.save();
         
-        // // Rename the PDF file with the author's work ID
-        // const newFilename = response._id + path.extname(req.originalFilename);
-        // fs.renameSync(req.file.path, 'uploads/' + newFilename);
-        
-        // // Update the PDF filename in the database
-        // response.pdf = newFilename;
-        // await response.save();
 
         const topic_id = req.params.topicid;
         const topic = await Topic.findById(topic_id);
@@ -105,6 +100,99 @@ router.get('/fetchpaperbyid/:id',async(req,res)=>{
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
+    }
+})
+
+router.get('/getallauthorswithtracks',async(req,res)=>{
+    try {
+        // Fetch all distinct authors. Assumes you have a field 'authorName' in your schema
+        const authors = await author_work.find({}).populate('track');
+        res.json(authors);
+    } catch (error) {
+        console.error('Error fetching authors:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})
+router.get('/getallauthorswithreviewers',async(req,res)=>{
+    try {
+        // Fetch all distinct authors. Assumes you have a field 'authorName' in your schema
+        const authors = await author_work.find({}).populate('reviewers');
+        res.json(authors);
+    } catch (error) {
+        console.error('Error fetching authors:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})
+/*
+const conference = await Conference.findById(id).populate({
+      path: 'tracks',
+      populate: [
+          { path: 'topics', populate: { path: 'author_works' } },
+          { path: 'reviewers' }
+      ]
+  }).populate({
+    path:'committee',
+    populate:'members'
+  });
+*/
+router.get('/getallpaperbyaonid/:conid',async(req,res)=>{
+    try {
+        const conid=req.params.conid;
+        const re=await Conference.findById(conid).populate({
+            path:'author_works',
+            populate:{path:'track'}
+        });
+        const data=[];
+        re.author_works.forEach(element => {
+            data.push({
+                paper_id:element._id,
+                paper_title:element.title,
+                track_id:element.track._id,
+                track_name:element.track.track_name
+            })
+            //console.log(element);
+        });
+        //console.log(re.author_works);
+        res.send(data);
+    } catch (error) {
+         console.error('Error fetching authors:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})
+router.get('/getallpaper2byaonid/:conid',async(req,res)=>{
+    try {
+        const conid=req.params.conid;
+        const re=await Conference.findById(conid).populate({
+            path:'author_works',
+            populate:{path:'track'}
+        });
+        const data=[];
+        re.author_works.forEach(element => {
+          
+            let st='';
+            element.co_authors.forEach(co=>{
+             st+=co.name+', ';
+            });
+            const temp={
+                paper_id:element._id,
+                paper_title:element.title,
+                track_name:element.track.track_name,
+                name:element.name,
+                email:element.email,
+                country:element.country,
+                co_authors:st
+            }
+
+            
+            
+            data.push(temp);
+            //console.log(element);
+        });
+        //console.log(re.author_works);
+        res.send(data);
+    } catch (error) {
+         console.error('Error fetching authors:', error);
+        res.status(500).send('Internal Server Error');
     }
 })
 
