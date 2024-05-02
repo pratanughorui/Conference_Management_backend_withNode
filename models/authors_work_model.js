@@ -62,6 +62,8 @@ const paperSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Track'
     }
+},{
+    timestamps:true
 });
 
 const Paper = mongoose.model('Paper', paperSchema);

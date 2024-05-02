@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const app=express();
 app.use(cors({
-    origin:process.env.FRONTURL, //process.env.FRONTURL //'http://localhost:3000'  // Replace with the actual frontend URL
+    origin:'http://localhost:3000', //process.env.FRONTURL //'http://localhost:3000'  // Replace with the actual frontend URL
   }));
 app.use(bodyparser.json());
 
@@ -27,6 +27,7 @@ const committee=require('./routers/committeeController');
 const members=require('./routers/membersController')
 const track=require('./routers/TrackRoutes')
 const topic=require('./routers/topicController')
+const report=require('./routers/reports')
 app.use('/conference',conferenceroutes);
 app.use('/author',authorsroutes);
 app.use('/reviewer',reviewerroutes);
@@ -35,6 +36,7 @@ app.use('/committee',committee);
 app.use('/member',members);
 app.use('/track',track);
 app.use('/topic',topic);
+app.use('/report',report);
 
 
 
