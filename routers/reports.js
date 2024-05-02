@@ -17,7 +17,7 @@ router.get('/getListOfFirsrAuthor/:conid',async(req,res)=>{
         re.author_works.forEach(element => {
             data.push({
                 name:element.name,
-                mobile:element.mobile,
+                mobile:element.contact_no,
                 email:element.email,
                 affiliation:element.affiliation,
                 country:element.country,
@@ -273,6 +273,40 @@ router.get('/getpaperstatus/:conid', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+router.get('/getreviewers/:conid',async(req,res)=>{
+    try {
+        const conid=req.params.conid;
+        const re=await Conference.findById(conid).populate({
+            path:'tracks',
+            populate:[
+                {path:'reviewers'}
+            ]
+        });
+        const data=[];
+        re.tracks.forEach(element => {
+          
+           
+            element.reviewers.forEach(rev=>{
+                const temp={
+                    track_name:element.track_name,
+                    name:rev.name,
+                    affiliation:rev.affiliation,
+                   country:rev.country,
+                   email:rev.email,
+                   mobile:rev.mobile
+                }
+                data.push(temp);
+            })
+
+           
+            //console.log(element);
+        });
+        res.send(data);
+    } catch (error) {
+        console.error('Error fetching authors:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})
 
 
 
