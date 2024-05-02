@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const app=express();
 app.use(cors({
-    origin:'http://localhost:3000', //process.env.FRONTURL //'http://localhost:3000'  // Replace with the actual frontend URL
+    origin:process.env.FRONTURL, //process.env.FRONTURL //'http://localhost:3000'  // Replace with the actual frontend URL
   }));
 app.use(bodyparser.json());
 
@@ -37,25 +37,6 @@ app.use('/member',members);
 app.use('/track',track);
 app.use('/topic',topic);
 app.use('/report',report);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const port=process.env.PORT||3030;
