@@ -14,14 +14,21 @@ const reviewerSchema = new mongoose.Schema({
         required: true
     },
     password: {
-        type: String,
-        required: true
+        type: String
     },
     mobile: String,
     email: {
         type: String,
         required: true,
         unique: true // Ensures uniqueness
+    },
+    google_sh_id: {
+        type: String,
+        default: null  // Optional
+    },
+    orcid_id: {
+        type: String,
+        default: null  // Optional
     }
 });
 

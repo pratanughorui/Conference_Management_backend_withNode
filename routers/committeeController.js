@@ -65,5 +65,21 @@ router.get('/getmembersfromtpc/:conid',async(req,res)=>{
         res.status(500).json({ error: 'Internal server error' });
     }
 })
+router.get('/getcommittee/:id', async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const conference = await Conference.findById(id).populate('committee');
+  
+      if (!conference) {
+        return res.status(404).json({ message: 'Conference not found' });
+      }
+  
+      res.status(200).json(conference.committee);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  });
+
 
 module.exports=router;

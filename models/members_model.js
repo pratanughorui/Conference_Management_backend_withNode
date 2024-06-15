@@ -22,8 +22,7 @@ const memberSchema = new mongoose.Schema({
         required: true
     },
     password: {
-        type: String,
-        required: true
+        type: String
     },
     mobile: {
         type: String,
@@ -35,9 +34,9 @@ const memberSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
-        unique: true // Ensures uniqueness
-    }
+        required: true 
+    },
+
 });
 
 const mamber = mongoose.model('members', memberSchema);

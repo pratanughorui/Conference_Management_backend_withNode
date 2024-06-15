@@ -6,19 +6,23 @@ const Topic=require('../models/topics_model');
 const { populate } = require('../models/authors_work_model');
 
 //-------------------------------------
-router.post('/create',async(req,res)=>{
-    try {
-       // console.log("fff");
-     const con=req.body;
-     const newconference=new Conference(con);
-     const conf=await newconference.save();
-    // console.log("data saved");
-     res.status(200).json(conf);
-    } catch (error) {
-      console.error("Error creating conference:", error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
- })
+router.post('/create', async (req, res) => {
+  try {
+    console.log('llllllllllllll');
+    const con = req.body;
+    const newconference = new Conference(con);
+    const conf = await newconference.save();
+    
+    // Delay the response for 5 seconds
+    setTimeout(() => {
+      res.status(200).json(conf);
+    }, 5000); // 5000 milliseconds = 5 seconds
+  } catch (error) {
+    console.error("Error creating conference:", error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
  router.get('/fetch/:id',async(req,res)=>{
     try {
@@ -44,10 +48,10 @@ router.post('/create',async(req,res)=>{
 router.get('/getallconference',async(req,res)=>{
  try {
   const conference = await Conference.find().populate({
-    path: 'tracks',
-    populate: {
-        path: 'topics'
-    }
+    path: 'tracks'
+    // populate: {
+    //     path: 'topics'
+    // }
 });
  res.send(conference);
  } catch (error) {
@@ -61,7 +65,7 @@ router.get('/getconferencebyid/:id',async(req,res)=>{
     const conference = await Conference.findById(id).populate({
       path: 'tracks',
       populate: [
-          { path: 'topics', populate: { path: 'author_works' } },
+          // { path: 'topics', populate: { path: 'author_works' } },
           { path: 'reviewers' }
       ]
   }).populate({
@@ -73,6 +77,28 @@ router.get('/getconferencebyid/:id',async(req,res)=>{
    console.log(error);
   }
  })
+
+ router.get('/conferenceAndTrack/:id', async (req, res) => {
+  try {
+    const conference = await Conference.findById(req.params.id).populate('tracks');
+    
+    if (!conference) {
+      return res.status(404).send({ message: 'Conference not found' });
+    }
+
+    const response = {
+      conference_title: conference.conference_title,
+      tracks: conference.tracks.map(track => ({
+        id: track._id,
+        name: track.track_name
+      }))
+    };
+
+    res.json(response);
+  } catch (error) {
+    res.status(500).send({ message: 'Server error' });
+  }
+});
 
 
   module.exports=router;

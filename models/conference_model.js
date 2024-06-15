@@ -37,10 +37,13 @@ const conference=new mongoose.Schema({
     last_date_paper_sub:{
         type:String,
     },
-    date_allot_paper_torev:{
-        type:String,
-    },
-    last_date_review_sub:{
+    // date_allot_paper_torev:{
+    //     type:String,
+    // },
+    // last_date_review_sub:{
+    //     type:String,
+    // },
+    date_of_call_for_paper:{
         type:String,
     },
     number_of_papers:{

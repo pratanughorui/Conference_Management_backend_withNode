@@ -7,14 +7,18 @@ const track=new mongoose.Schema({
         type:String,
         required:true
     },
-    topics: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Topic'
+//    topics: [{
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: 'Topic'
  
-    }],
+//     }], 
     reviewers:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reviewer'
+    }],
+    author_works:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Paper'
     }]
 
 });
