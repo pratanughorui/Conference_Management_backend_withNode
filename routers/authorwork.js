@@ -11,6 +11,7 @@ router.use(bodyParser.json());
 const fs = require('fs');
 const path = require('path');
 const author_work=require('../models/authors_work_model');
+const Track = require('../models/tracks_model');
 // const uploadsDir = path.join(__dirname, 'uploads');
 // if (!fs.existsSync(uploadsDir)) {
 //     fs.mkdirSync(uploadsDir);
@@ -30,7 +31,7 @@ const author_work=require('../models/authors_work_model');
 var upload = multer({
     storage: multer.diskStorage({})
 });
-router.post('/upload/:topicid/:conferenceid/:trackid', upload.single('pdf'), async (req, res) => {
+router.post('/upload/:conferenceid/:trackid', upload.single('pdf'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data);
         const { email } = data;
@@ -41,17 +42,21 @@ router.post('/upload/:topicid/:conferenceid/:trackid', upload.single('pdf'), asy
         const trackid=req.params.trackid;
         const conference_id = req.params.conferenceid;
         const conference = await Conference.findById(conference_id);
-        
+        const track=await Track.findById(trackid);
         if (!conference) {
             return res.status(404).json({ error: 'Conference not found' });
         }
-        
+        if(!track){
+            return res.status(404).json({ error: 'Track not found' });
+        }
         const existingAuthor = await author_work.findOne({ email });
-        
+   
         if (existingAuthor && conference.author_works.includes(existingAuthor._id)) {
            // fs.unlinkSync(req.file.path);
+           
             return res.status(400).json({ error: 'Author already associated with this conference.' });
         }
+        
         const link=await Upload.uploadFile(req.file.path);
         // If author doesn't exist, create a new document
         const newWork = new author_work({
@@ -60,22 +65,24 @@ router.post('/upload/:topicid/:conferenceid/:trackid', upload.single('pdf'), asy
             pdfLink:link,
             track:trackid
         });
-        
+   
          const response = await newWork.save();
-        
+         console.log('fffff');
+         track.author_works.push(response._id);
 
-        const topic_id = req.params.topicid;
-        const topic = await Topic.findById(topic_id);
+        //const topic_id = req.params.topicid;
+        //const topic = await Topic.findById(topic_id);
        // res.status(200).json({ message: 'paper submitted successfully' });
-        if (!topic) {
-            return res.status(404).json({ error: 'Topic not found' });
-        }
+        // if (!topic) {
+        //     return res.status(404).json({ error: 'Topic not found' });
+        // }
         
         // // Add the ID of the newly created author work to the topic's author works array
-        topic.author_works.push(response._id);
+        //topic.author_works.push(response._id);
         conference.author_works.push(response._id);
         
-        await topic.save();
+        // await topic.save();
+        await track.save();
         await conference.save();
 
         // console.log("Data saved successfully");

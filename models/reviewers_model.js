@@ -30,6 +30,7 @@ const reviewerSchema = new mongoose.Schema({
         type: String,
         default: null  // Optional
     }
+
 });
 
 const Reviewer = mongoose.model('Reviewer', reviewerSchema);

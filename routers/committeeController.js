@@ -1,9 +1,10 @@
 const express=require('express');
 const Conference=require('../models/conference_model');
-const committee=require('../models/committe_model');
+// const committee=require('../models/committe_model');
 const member=require('../models/members_model');
 const router=express.Router();
 const bodyParser = require('body-parser');
+const Committee = require('../models/committe_model');
 router.use(bodyParser.json());
 router.post('/createcommittee/:id', async (req, res) => {
     try {
@@ -16,7 +17,7 @@ router.post('/createcommittee/:id', async (req, res) => {
         }
        console.log(data);
         for (const com of data) {
-            const newcom = new committee({ committee_name: com }); // Creating a new committee object
+            const newcom = new Committee({ committee_name: com }); // Creating a new committee object
             await newcom.save(); // Saving the new committee to the database
             conference.committee.push(newcom._id); // Adding the ID of the new committee to the conference's committee array
         }
@@ -80,6 +81,20 @@ router.get('/getcommittee/:id', async (req, res) => {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   });
+  router.delete('/deleteCommittee/:id', async (req, res) => {
+    const { id } = req.params;
+    //console.log('Deleting committee with ID:', id);
+    try {
+        const committee = await Committee.findByIdAndDelete(id);
+        if (!committee) {
+            return res.status(404).json({ message: 'Committee not found' });
+        }
+        return res.status(200).json({ message: 'Committee is deleted.' });
+    } catch (error) {
+        console.error(error); // Log the error for debugging purposes
+        return res.status(500).json({ message: 'Server error' });
+    }
+});
 
 
 module.exports=router;

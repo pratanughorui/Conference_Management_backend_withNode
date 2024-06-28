@@ -48,5 +48,20 @@ router.put('/addtracks/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
   })
+  router.delete('/deleteTrack/:trackid',async(req,res)=>{
+   
+    try {
+      const id=req.params.trackid;
+      const track = await Track.findByIdAndDelete(id);
+      if (!track) {
+          return res.status(404).json({ message: 'Track not found' });
+      }
+      return res.status(200).json({ message: 'Track is deleted.' });
+      
+    } catch (error) {
+      console.error(error); // Log the error for debugging purposes
+        return res.status(500).json({ message: 'Server error' });
+    }
+  })
 
   module.exports=router;
