@@ -64,7 +64,11 @@ const conference=new mongoose.Schema({
     }]
 
     
-});
+},
+{
+  timestamps: true
+}
+);
 //create conference model
 const con=new mongoose.model('Conference',conference);
 module.exports=con;

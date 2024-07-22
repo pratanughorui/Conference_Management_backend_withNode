@@ -9,45 +9,53 @@ const Conference=require('../models/conference_model');
 const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
+router.use(express.json()); // For parsing application/json
+router.use(express.urlencoded({ extended: true })); 
+
 
 router.post('/create/:track_id', async (req, res) => {
     try {
         const { reviewers } = req.body;
         const trackId = req.params.track_id;
-        //console.log(reviewers);
+
+        // Validate that the track exists
+        const track = await Track.findById(trackId);
+        if (!track) {
+            return res.status(404).json({ error: 'Track not found' });
+        }
 
         // Iterate through each reviewer in the array
         for (const reviewerData of reviewers) {
             const { name, affiliation, country, password, mobile, email } = reviewerData;
 
-            // 1. Validate email address - For simplicity, we assume it's valid here
-            if(!emailverify(email)){
+            // 1. Validate email address
+            if (!emailverify(email)) {
                 return res.status(400).json({ error: `email is not valid` });
             }
 
             // 2. Check if reviewer with the provided email already exists
-            const track = await Track.findById(trackId);
-            if (!track) {
-                return res.status(404).json({ error: 'Track not found' });
-            }
             const existingReviewer = await Reviewer.findOne({ email });
-            if (existingReviewer ) {
-                if(track.reviewers.includes(existingReviewer._id)){
+            if (existingReviewer) {
+                if (track.reviewers.includes(existingReviewer._id)) {
                     return res.status(400).json({ error: `Reviewer already exists` });
-                }else{
+                } else {
                     track.reviewers.push(existingReviewer._id);
-                      await track.save();
-                      return res.status(201).json({ message: 'Reviewers added successfully' });
+                    await track.save();
+                    return res.status(201).json({ message: 'Reviewer added successfully' });
                 }
-                
             }
 
             // 3. If email is genuine and reviewer doesn't exist, save to the database
-            const newReviewer = new Reviewer({ name, affiliation, country, password, mobile, email });
+            const newReviewer = new Reviewer({
+                name,
+                affiliation,
+                country,
+                password,
+                mobile,
+                email,
+                track: trackId // Include track ID here
+            });
             const savedReviewer = await newReviewer.save();
-
-            // 4. Retrieve the track using the provided track ID
-            
 
             // Add the ID of the newly created reviewer to the track's reviewers array
             track.reviewers.push(savedReviewer._id);
@@ -62,6 +70,7 @@ router.post('/create/:track_id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 router.get('/fetchreviewerbyid/:id', async (req, res) => {
     try {
@@ -81,35 +90,53 @@ router.get('/fetchreviewerbyid/:id', async (req, res) => {
 
 router.post('/reviewsubmit', async (req, res) => {
     try {
-        const review = req.body;
-        const existingReview = await reviewes.findOne({
-            reviewer_id: review.reviewer_id,
-            authorwork_id: review.authorwork_id
-        });
-
-        if (existingReview) {
-            return res.status(400).json({ error: 'Review already exists' });
-        }
-        const reviewer = await Reviewer.findById(review.reviewer_id);
-        if (!reviewer) {
-            return res.status(404).json({ error: 'Reviewer not found' });
-            
-        }
-        const author = await author_work.findById(review.authorwork_id);
-        if (!author) {
-            return res.status(404).json({ error: 'Author not found' });
-            
-        }
-        const newReview = new reviewes(review); // Assuming 'Review' is the correct model name
-        await newReview.save();
-        return res.status(201).json({ message: 'Thank You For Your Review' });
-        
+      const review = req.body;
+  
+      // Log the entire review object for debugging
+      //console.log('Received review:', review);
+  
+      // Check if the review already exists
+      const existingReview = await reviewes.findOne({
+        reviewer_id: review.review.reviewerId,
+        authorwork_id: review.review.paperId
+      });
+  
+      if (existingReview) {
+        return res.status(400).json({ error: 'Review already exists' });
+      }
+  
+      // Validate reviewer
+      const reviewer = await Reviewer.findById(review.review.reviewerId);
+      if (!reviewer) {
+        return res.status(404).json({ error: 'Reviewer not found' });
+      }
+  
+      // Validate author
+      const author = await author_work.findById(review.review.paperId);
+      if (!author) {
+        return res.status(404).json({ error: 'Author not found' });
+      }
+  
+      // Create and save new review
+      const newReview = new reviewes({
+        reviewer_id: review.review.reviewerId,
+        authorwork_id: review.review.paperId,
+        review_date: review.review.reviewDate,
+        acceptance: review.review.acceptance,
+        total_score: review.review.totalScore,
+        qus_ans: review.coauthor, // Map this field as per your data
+        gradding: review.name // Map this field as per your data
+      });
+  
+      await newReview.save();
+  
+      return res.status(201).json({ message: 'Thank you for your review!' });
+  
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Internal server error' });
-        
+      console.error('Error handling review submission:', error);
+      return res.status(500).json({ error: 'Internal server error' });
     }
-});
+  });
 
 // router.get('/getallreviewers/:id', async (req, res) => {
 //     try {

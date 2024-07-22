@@ -203,4 +203,22 @@ router.get('/getallpaper2byaonid/:conid',async(req,res)=>{
     }
 })
 
+router.get('/getallauthorworkbytrack/:trackid', async (req, res) => {
+    try {
+        const trackid = req.params.trackid;
+        
+        // Assuming trackid is a string that can be converted to an ObjectId
+        const authorWorks = await author_work.find({ track: trackid });
+        
+        if (!authorWorks.length) {
+            return res.status(200).json({});
+        }
+        
+        res.status(200).json(authorWorks);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports=router;

@@ -8,15 +8,15 @@ const { populate } = require('../models/authors_work_model');
 //-------------------------------------
 router.post('/create', async (req, res) => {
   try {
-    console.log('llllllllllllll');
+    // console.log('llllllllllllll');
     const con = req.body;
     const newconference = new Conference(con);
     const conf = await newconference.save();
-    
+    res.status(200).json(conf);
     // Delay the response for 5 seconds
-    setTimeout(() => {
-      res.status(200).json(conf);
-    }, 5000); // 5000 milliseconds = 5 seconds
+    // setTimeout(() => {
+     
+    // }, 5000); // 5000 milliseconds = 5 seconds
   } catch (error) {
     console.error("Error creating conference:", error);
     res.status(500).json({ error: 'Internal server error' });

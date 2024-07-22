@@ -6,7 +6,7 @@ router.use(express.json());
 router.put('/addtracks/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      const { tracks } = req.body;
+      const  tracks  = req.body.tracks;
   
       // Check if the conference exists
       const conference = await Conference.findById(id);
@@ -17,10 +17,10 @@ router.put('/addtracks/:id', async (req, res) => {
       // Create new track documents and push their IDs to the conference's tracks array
       const trackIds = [];
       for (const trackData of tracks) {
-        const newTrack = new Track(trackData);
+        const newTrack = new Track({track_name: trackData});
         await newTrack.save();
         conference.tracks.push(newTrack._id);
-        trackIds.push(newTrack._id);
+        //trackIds.push(newTrack._id);
       }
   
       // Save the updated conference

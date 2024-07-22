@@ -308,6 +308,127 @@ router.get('/getreviewers/:conid',async(req,res)=>{
     }
 })
 
+//------------------------list of all papers(first report)
+router.get('/getpaperlist/:conid', async (req, res) => {
+    try {
+        const conid=req.params.conid;
+        const re=await Conference.findById(conid).populate({
+            path:'author_works',
+            populate:[
+                {path:'track'}
+            ]
+        });
+        const data=[];
+        re.author_works.forEach(element => {
+          
+            // let st='';
+            // element.co_authors.forEach(co=>{
+            //  st+=co.name+', ';
+            // });
+            // let ldou = '';
+            // if (element.updatedAt) {
+            //     ldou = new Date(element.updatedAt).toLocaleDateString();
+            // }
+            const temp={
+                track_name:element.track.track_name,
+                paper_title:element.title,
+            }
+
+            data.push(temp);
+            //console.log(element);
+        });
+        //console.log(re.author_works);
+        res.send(data);
+    } catch (error) {
+         console.error('Error fetching authors:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/getauthorwisepaper/:conid', async (req, res) => {
+    try {
+        const conid=req.params.conid;
+        const re=await Conference.findById(conid).populate({
+            path:'author_works',
+            populate:[
+                {path:'track'}
+            ]
+        });
+        const data=[];
+        re.author_works.forEach(element => {
+          
+            let st='';
+            element.co_authors.forEach(co=>{
+                if(co.name){
+                    st+=co.name+', ';
+                    //console.log(co);
+                }
+             
+            });
+            // let ldou = '';
+            // if (element.updatedAt) {
+            //     ldou = new Date(element.updatedAt).toLocaleDateString();
+            // }
+            const temp={
+                track_name:element.track.track_name,
+                paper_title:element.title,
+                first_author:element.name,
+                first_author_email:element.email,
+                first_author_country:element.country,
+                co_authors:st,
+                
+            }
+
+            data.push(temp);
+            //console.log(element);
+        });
+        //console.log(re.author_works);
+        res.send(data);
+    } catch (error) {
+         console.error('Error fetching authors:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// router.get('/getListOfTpcCommitteeMember/:conid', async (req, res) => {
+//     try {
+//         const conid = req.params.conid;
+//         const re = await Conference.findById(conid).populate({
+//             path: 'committee',
+//             populate: { path: 'members' }
+//         });
+
+//         const data = {};  // Using an object to group members by committee name
+        
+//         re.committee.forEach(element => {
+//             if (element.committee_name === "tpc") {
+//                 if (!data[element.committee_name]) {  // If this committee isn't already a key in data, add it
+//                     data[element.committee_name] = [];
+//                 }
+
+//                 element.members.forEach(member => {
+//                     const temp = {
+//                         committee_id: element._id,
+//                         com_name: element.committee_name,
+//                         designation: member.role,
+//                         name: member.name,
+//                         mobile: member.mobile,
+//                         email: member.email,
+//                         affiliation: member.affiliation,
+//                         country: member.country
+//                     };
+//                     data[element.committee_name].push(temp);  // Push each member into the correct committee array
+//                 });
+//             }
+//         });
+
+//         res.send(data);
+//     } catch (error) {
+//         res.status(500).send({ message: "Failed to retrieve data", error: error });
+//     }
+// });
+
+
 
 
 module.exports=router;

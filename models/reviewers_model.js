@@ -29,6 +29,10 @@ const reviewerSchema = new mongoose.Schema({
     orcid_id: {
         type: String,
         default: null  // Optional
+    },
+    track:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Track'
     }
 
 });

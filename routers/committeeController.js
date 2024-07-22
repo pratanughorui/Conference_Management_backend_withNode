@@ -70,17 +70,23 @@ router.get('/getcommittee/:id', async (req, res) => {
     const { id } = req.params;
   
     try {
+      // Fetch the conference and populate the committee details
       const conference = await Conference.findById(id).populate('committee');
   
       if (!conference) {
         return res.status(404).json({ message: 'Conference not found' });
       }
   
-      res.status(200).json(conference.committee);
+      // Respond with both conference name and committee details
+      res.status(200).json({
+        conferenceName: conference.conference_title, // Adjust according to your field name
+        committee: conference.committee
+      });
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   });
+  
   router.delete('/deleteCommittee/:id', async (req, res) => {
     const { id } = req.params;
     //console.log('Deleting committee with ID:', id);
