@@ -176,15 +176,17 @@ router.get('/allreviewersexcurr/:id', async (req, res) => {
         
         if (conferences.length > 0) { // Check if conferences array is not empty
             let allReviewers = [];
+            const allReviewersSet = new Set();
             // Iterate through each conference
             conferences.forEach(conference => {
                 // Iterate through each track in the conference
                 conference.tracks.forEach(track => {
                     // Add reviewers from each track to the allReviewers array
-                    allReviewers.push(...track.reviewers);
+                    track.reviewers.forEach(reviewer => allReviewersSet.add(reviewer));
                 });
             });
             // Send the array of reviewers as the response
+            allReviewers = Array.from(allReviewersSet);
             res.json(allReviewers);
         } else {
             res.status(404).json({ error: 'No conferences found' });

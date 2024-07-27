@@ -76,17 +76,20 @@ router.get('/allmembersexcurr/:id', async (req, res) => {
           }
       });
       
+      
       if (conferences.length > 0) { // Check if conferences array is not empty
           let allmembers = [];
+          const allmembersSet = new Set();
           // Iterate through each conference
           conferences.forEach(conference => {
               // Iterate through each track in the conference
               conference.committee.forEach(com => {
                   // Add reviewers from each track to the allReviewers array
-                  allmembers.push(...com.members);
+                  com.members.forEach(member => allmembersSet.add(member));
               });
           });
           // Send the array of reviewers as the response
+          allmembers=Array.from(allmembersSet);
           res.json(allmembers);
       } else {
           res.status(404).json({ error: 'No conferences found' });

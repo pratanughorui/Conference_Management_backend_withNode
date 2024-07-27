@@ -37,7 +37,10 @@ router.put('/addtracks/:id', async (req, res) => {
         const id=req.params.conid;
         const conference = await Conference.findById(id).populate("tracks");
         if (conference) {
-            res.json(conference.tracks);
+          res.status(200).json({
+            conferenceName: conference.conference_title, // Adjust according to your field name
+            tracks: conference.tracks
+          });
           } else {
             // If committee is not found, send 404 Not Found
             res.status(404).json({ error: 'Conference not found' });
