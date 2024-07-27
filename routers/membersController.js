@@ -57,7 +57,7 @@ router.get('/getmembersbycomid/:comid', async (req, res) => {
       res.json(committee.members);
     } else {
       // If committee is not found, send 404 Not Found
-      res.status(404).json({ error: 'Committee not found' });
+      res.json([]);
     }
   } catch (error) {
     console.error(error);
