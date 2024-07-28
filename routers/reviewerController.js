@@ -24,52 +24,62 @@ router.post('/create/:track_id', async (req, res) => {
             return res.status(404).json({ error: 'Track not found' });
         }
 
+        const addedReviewers = [];
+        const errors = [];
+
         // Iterate through each reviewer in the array
         for (const reviewerData of reviewers) {
-            const { name, affiliation, country, password, mobile, email } = reviewerData;
+            const { name, affiliation, country, mobile, password, email } = reviewerData;
 
             // 1. Validate email address
             if (!emailverify(email)) {
-                return res.status(400).json({ error: `email is not valid` });
+                errors.push({ email, error: 'Email is not valid' });
+                continue;
             }
 
             // 2. Check if reviewer with the provided email already exists
             const existingReviewer = await Reviewer.findOne({ email });
             if (existingReviewer) {
                 if (track.reviewers.includes(existingReviewer._id)) {
-                    return res.status(400).json({ error: `Reviewer already exists` });
+                    errors.push({ email, error: `${reviewerData.name} already exists in this track` });
                 } else {
                     track.reviewers.push(existingReviewer._id);
                     await track.save();
-                    return res.status(201).json({ message: 'Reviewer added successfully' });
+                    addedReviewers.push(existingReviewer._id);
                 }
+            } else {
+                // 3. If email is genuine and reviewer doesn't exist, save to the database
+                const newReviewer = new Reviewer({
+                    name,
+                    affiliation,
+                    country,
+                    password,
+                    mobile,
+                    email,
+                    track: trackId // Include track ID here
+                });
+                const savedReviewer = await newReviewer.save();
+
+                // Add the ID of the newly created reviewer to the track's reviewers array
+                track.reviewers.push(savedReviewer._id);
+                addedReviewers.push(savedReviewer._id);
             }
-
-            // 3. If email is genuine and reviewer doesn't exist, save to the database
-            const newReviewer = new Reviewer({
-                name,
-                affiliation,
-                country,
-                password,
-                mobile,
-                email,
-                track: trackId // Include track ID here
-            });
-            const savedReviewer = await newReviewer.save();
-
-            // Add the ID of the newly created reviewer to the track's reviewers array
-            track.reviewers.push(savedReviewer._id);
-
-            // Save the updated track to the database
-            await track.save();
         }
 
-        res.status(201).json({ message: 'Reviewers added successfully' });
+        // Save the updated track to the database
+        await track.save();
+
+        if (errors.length > 0) {
+            return res.status(400).json({ addedReviewers, errors });
+        } else {
+            return res.status(201).json({ message: 'Reviewers added successfully', addedReviewers });
+        }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
 router.get('/fetchreviewerbyid/:id', async (req, res) => {
