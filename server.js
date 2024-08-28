@@ -6,8 +6,18 @@ require('dotenv').config();
 
 
 const app=express();
+// app.use(cors({
+//     origin : process.env.FRONTURL, //process.env.FRONTURL //'http://localhost:5173'  // Replace with the actual frontend URL
+// }));
 app.use(cors({
-    origin : 'http://localhost:5173', //process.env.FRONTURL //'http://localhost:5173'  // Replace with the actual frontend URL
+    origin: function (origin, callback) {
+        // Replace this with your own logic to check the origin
+        if (origin === process.env.FRONTURL || origin === 'http://localhost:5173') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
 }));
 app.use(bodyparser.json());
 
