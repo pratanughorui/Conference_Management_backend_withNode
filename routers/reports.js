@@ -391,19 +391,44 @@ router.get('/getauthorwisepaper/:conid', async (req, res) => {
     }
 });
 
-router.get('/gettrackwisepaper/:track_id',async(req,res)=>{
+router.get('/gettrackwisepaper/:track_id', async (req, res) => {
     try {
         const trackId = req.params.track_id;
         const papers = await aw.find({ track: trackId }); // Query to find papers with the given track_id
+
         if (papers.length > 0) {
-            res.status(200).json(papers); // Return the papers if found
+            const data = [];
+            
+            papers.forEach(element => {
+                let st = '';
+                
+                if (Array.isArray(element.co_authors)) {
+                    element.co_authors.forEach(co => {
+                        if (co.name) {
+                            st += co.name + ', ';
+                        }
+                    });
+                }
+                
+                const temp = {
+                    title: element.title,
+                    name: element.name,
+                    email: element.email,
+                    country: element.country,
+                    co_authors: st ? st.slice(0, -2) : '', // Remove the last comma and space
+                };
+                data.push(temp);
+            });
+        
+            res.status(200).json(data); // Return the papers if found
         } else {
             res.status(404).json({ message: 'No papers found for this track' }); // Handle case where no papers are found
         }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message }); // Handle server errors
     }
-})
+});
+
 
 // router.get('/getListOfTpcCommitteeMember/:conid', async (req, res) => {
 //     try {
