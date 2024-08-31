@@ -5,9 +5,9 @@ const bodyparser=require('body-parser');
 require('dotenv').config();
 
 
-const app=express();
+ const app=express();
 // app.use(cors({
-//     origin : process.env.FRONTURL, //process.env.FRONTURL //'http://localhost:5173'  // Replace with the actual frontend URL
+//     origin : 'http://localhost:5173', //process.env.FRONTURL //'http://localhost:5173'  // Replace with the actual frontend URL
 // }));
 app.use(cors({
     origin: function (origin, callback) {

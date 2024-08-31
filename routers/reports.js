@@ -4,6 +4,7 @@ const Committee=require('../models/committe_model');
 const Member=require('../models/members_model')
 const Conference=require('../models/conference_model');
 const bodyParser = require('body-parser');
+const aw=require('../models/authors_work_model');
 const { populate } = require('../models/authors_work_model');
 router.use(express.json());
 router.get('/getListOfFirsrAuthor/:conid',async(req,res)=>{
@@ -389,6 +390,20 @@ router.get('/getauthorwisepaper/:conid', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+router.get('/gettrackwisepaper/:track_id',async(req,res)=>{
+    try {
+        const trackId = req.params.track_id;
+        const papers = await aw.find({ track: trackId }); // Query to find papers with the given track_id
+        if (papers.length > 0) {
+            res.status(200).json(papers); // Return the papers if found
+        } else {
+            res.status(404).json({ message: 'No papers found for this track' }); // Handle case where no papers are found
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message }); // Handle server errors
+    }
+})
 
 // router.get('/getListOfTpcCommitteeMember/:conid', async (req, res) => {
 //     try {
