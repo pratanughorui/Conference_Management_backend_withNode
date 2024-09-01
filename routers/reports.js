@@ -331,6 +331,7 @@ router.get('/getpaperlist/:conid', async (req, res) => {
             //     ldou = new Date(element.updatedAt).toLocaleDateString();
             // }
             const temp={
+                _id:element._id,
                 track_name:element.track.track_name,
                 paper_title:element.title,
             }
