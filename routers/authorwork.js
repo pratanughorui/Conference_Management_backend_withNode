@@ -87,7 +87,7 @@ router.post('/upload/:conferenceid/:trackid', upload.single('pdf'), async (req, 
 
         // console.log("Data saved successfully");
         //res.status(200).json({ message: 'Tracks added successfully'});
-         return res.status(201).json({ message: 'paper submitted successfully' });
+         return res.status(201).json({ message: 'paper submitted successfully',paper_id:response._id });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
