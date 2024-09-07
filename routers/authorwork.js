@@ -325,4 +325,35 @@ async function getConferenceNameByAuthorWork(authorWorkId) {
   return null; // Return null if no conference contains the author work
 }
 
+
+router.delete("/deletecoauthor/:author_work_id/:coauthor_id", async (req, res) => {
+    const { author_work_id, coauthor_id } = req.params;
+  
+    try {
+      // Find the author work document
+      const authorWork = await author_work.findById(author_work_id);
+  
+      if (!authorWork) {
+        return res.status(404).json({ error: "Author work not found" });
+      }
+  
+      // Filter out the co-author with the specified ID
+      const updatedCoAuthors = authorWork.co_authors.filter(
+        (coAuthor) => coAuthor._id.toString() !== coauthor_id
+      );
+  
+      // Update the document with the modified co-authors array
+      authorWork.co_authors = updatedCoAuthors;
+      await authorWork.save();
+  
+      return res.status(200).json({ message: "Co-author deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting co-author:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
+ 
+  
+  
+
 module.exports = router;
