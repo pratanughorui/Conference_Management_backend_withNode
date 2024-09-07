@@ -321,24 +321,21 @@ router.get('/getpaperlist/:conid', async (req, res) => {
         });
         const data=[];
         re.author_works.forEach(element => {
-          
-            // let st='';
-            // element.co_authors.forEach(co=>{
-            //  st+=co.name+', ';
-            // });
-            // let ldou = '';
-            // if (element.updatedAt) {
-            //     ldou = new Date(element.updatedAt).toLocaleDateString();
-            // }
-            const temp={
-                _id:element._id,
-                track_name:element.track.track_name,
-                paper_title:element.title,
-            }
-
+            // Join the co_authors' names with a comma and space
+            let coauthorNames = element.co_authors.map(co => co.name).join(', ');
+        
+            const temp = {
+                _id: element._id,
+                track_name: element.track.track_name,
+                paper_title: element.title,
+                author_name: element.name,
+                pdf: element.pdfLink,
+                coauthor_name: coauthorNames // No extra comma at the end
+            };
+        
             data.push(temp);
-            //console.log(element);
         });
+        
         //console.log(re.author_works);
         res.send(data);
     } catch (error) {
