@@ -102,4 +102,25 @@ router.get('/getconferencebyid/:id',async(req,res)=>{
 });
 
 
+// Update conference API
+router.put('/updateConference/:id', async (req, res) => {
+  try {
+    const conferenceId = req.params.id; // Get conference ID from request parameters
+    const updatedData = req.body; // Get updated conference data from the request body
+
+    // Find the conference by ID and update it with the new data
+    const updatedConference = await Conference.findByIdAndUpdate(conferenceId, updatedData, { new: true });
+
+    if (!updatedConference) {
+      return res.status(404).json({ error: 'Conference not found' });
+    }
+
+    res.status(200).json(updatedConference); // Return the updated conference data
+  } catch (error) {
+    console.error('Error updating conference:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
   module.exports=router;
