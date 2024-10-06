@@ -102,5 +102,30 @@ router.get('/getcommittee/:id', async (req, res) => {
     }
 });
 
+// Edit committee name API
+router.put('/editCommittee/:id', async (req, res) => {
+    try {
+        const committeeId = req.params.id; // Get committee ID from request parameters
+        const { committee_name } = req.body; // Get the new committee name from the request body
+
+        // Find the committee by ID
+        const committee = await Committee.findById(committeeId);
+        
+        if (!committee) {
+            return res.status(404).json({ error: 'Committee not found' });
+        }
+
+        // Update the committee name
+        committee.committee_name = committee_name;
+        await committee.save(); // Save the updated committee
+
+        res.status(200).json({ message: 'Committee updated successfully', committee });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 module.exports=router;

@@ -108,6 +108,72 @@ router.post(
   }
 );
 
+router.put(
+  "/update/:conferenceid/:trackid/:paperid",
+  upload.single("pdf"),
+  async (req, res) => {
+    try {
+      const data = JSON.parse(req.body.data);
+      const { email } = data;
+      const { conferenceid, trackid, paperid } = req.params;
+
+      // Find conference, track, and existing paper by IDs
+      const conference = await Conference.findById(conferenceid);
+      const track = await Track.findById(trackid);
+      const paper = await author_work.findById(paperid);
+
+      if (!conference) {
+        return res.status(404).json({ error: "Conference not found" });
+      }
+      if (!track) {
+        return res.status(404).json({ error: "Track not found" });
+      }
+      if (!paper) {
+        return res.status(404).json({ error: "Paper not found" });
+      }
+
+      // If a new PDF is uploaded, update the file
+      if (req.file) {
+        // Optional: Delete the old PDF if needed
+        // fs.unlinkSync(paper.pdf);
+
+        const newPdfLink = await Upload.uploadFile(req.file.path);
+        paper.pdf = req.file.filename; // Update the PDF filename
+        paper.pdfLink = newPdfLink; // Update the link to the uploaded PDF
+      }
+
+      // Update other fields
+      paper.email = email;
+      paper.title = data.title || paper.title;
+      paper.abstract = data.abstract || paper.abstract;
+      paper.track = trackid;
+
+      // Save the updated paper
+      const updatedPaper = await paper.save();
+      console.log("Paper updated successfully");
+
+      // Save the track and conference if any association changes (optional)
+      if (!track.author_works.includes(paperid)) {
+        track.author_works.push(paperid);
+        await track.save();
+      }
+
+      if (!conference.author_works.includes(paperid)) {
+        conference.author_works.push(paperid);
+        await conference.save();
+      }
+
+      return res
+        .status(200)
+        .json({ message: "Paper updated successfully", paper: updatedPaper });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+
 router.delete("/deletePaper/:id", async (req, res) => {
   try {
     const paperId = req.params.id;

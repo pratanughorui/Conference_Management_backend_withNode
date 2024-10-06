@@ -24,6 +24,7 @@ router.post('/create', async (req, res) => {
 });
 
 
+
  router.get('/fetch/:id',async(req,res)=>{
     try {
       const id=req.params.id;
