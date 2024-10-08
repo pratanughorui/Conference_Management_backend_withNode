@@ -80,6 +80,38 @@ router.post('/create/:track_id', async (req, res) => {
     }
 });
 
+router.put('/updateReviewer/:reviewer_id', async (req, res) => {
+    try {
+        const { reviewer_id } = req.params;  // Reviewer ID from the route parameters
+        const { name, affiliation, country, mobile, email, googleScholarId, orcidId } = req.body;  // Fields to update
+
+        // Find the reviewer by reviewer_id
+        const existingReviewer = await Reviewer.findById(reviewer_id);
+        if (!existingReviewer) {
+            return res.status(404).json({ error: `Reviewer with ID ${reviewer_id} not found` });
+        }
+
+        // Update reviewer details
+        existingReviewer.name = name || existingReviewer.name;
+        existingReviewer.affiliation = affiliation || existingReviewer.affiliation;
+        existingReviewer.country = country || existingReviewer.country;
+        existingReviewer.mobile = mobile || existingReviewer.mobile;
+        existingReviewer.email = email || existingReviewer.email;
+        existingReviewer.googleScholarId = googleScholarId || existingReviewer.googleScholarId;
+        existingReviewer.orcidId = orcidId || existingReviewer.orcidId;
+
+        // Save the updated reviewer
+        await existingReviewer.save();
+
+        // Respond with success message
+        return res.status(200).json({ message: 'Reviewer updated successfully', reviewer: existingReviewer });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 
 router.get('/fetchreviewerbyid/:id', async (req, res) => {
