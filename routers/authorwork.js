@@ -109,66 +109,75 @@ router.post(
 );
 
 router.put(
-  "/update/:conferenceid/:trackid/:paperid",
+  "/update/:paperid",
   upload.single("pdf"),
   async (req, res) => {
+     console.log('sfdfsd');
     try {
-      const data = JSON.parse(req.body.data);
-      const { email } = data;
-      const { conferenceid, trackid, paperid } = req.params;
+      const data = JSON.parse(req.body.data);  // Parse the request body
+      const { paperid } = req.params;
 
-      // Find conference, track, and existing paper by IDs
-      const conference = await Conference.findById(conferenceid);
-      const track = await Track.findById(trackid);
+      // Find the conference, track, and paper
+     
       const paper = await author_work.findById(paperid);
 
-      if (!conference) {
-        return res.status(404).json({ error: "Conference not found" });
-      }
-      if (!track) {
-        return res.status(404).json({ error: "Track not found" });
-      }
-      if (!paper) {
-        return res.status(404).json({ error: "Paper not found" });
-      }
+      // Check if entities exist
+      // if (!conference) return res.status(404).json({ error: "Conference not found" });
+      // if (!track) return res.status(404).json({ error: "Track not found" });
+      if (!paper) return res.status(404).json({ error: "Paper not found" });
 
-      // If a new PDF is uploaded, update the file
+      // Handle PDF update if a new file is uploaded
+     
+      
       if (req.file) {
-        // Optional: Delete the old PDF if needed
-         fs.unlinkSync(paper.pdf);
-
+        // Delete old PDF if needed
+       // if (paper.pdf) fs.unlinkSync(paper.pdf);  // Remove the existing PDF from storage
+        
+        // Upload new PDF
         const newPdfLink = await Upload.uploadFile(req.file.path);
-        paper.pdf = req.file.filename; // Update the PDF filename
-        paper.pdfLink = newPdfLink; // Update the link to the uploaded PDF
+        paper.pdf = req.file.filename;  // Update PDF filename
+        paper.pdfLink = newPdfLink;     // Update PDF link (if stored externally)
       }
 
-      // Update other fields
-      paper.email = email;
+      // Update other paper fields
+      paper.email = data.email || paper.email;
       paper.title = data.title || paper.title;
       paper.abstract = data.abstract || paper.abstract;
-      paper.track = trackid;
+      paper.keywords = data.keywords || paper.keywords;
+      // paper.track = trackid;
+
+      // Handle co-authors update
+      if (data.co_authors && Array.isArray(data.co_authors)) {
+        paper.co_authors = data.co_authors.map(coAuthor => ({
+          name: coAuthor.name || "",
+          affiliation: coAuthor.affiliation || "",
+          country: coAuthor.country || "",
+          contact_no: coAuthor.contact_no || "",
+          email: coAuthor.email || "",
+        }));
+      }
 
       // Save the updated paper
       const updatedPaper = await paper.save();
-      console.log("Paper updated successfully");
 
-      // Save the track and conference if any association changes (optional)
-      if (!track.author_works.includes(paperid)) {
-        track.author_works.push(paperid);
-        await track.save();
-      }
+      // Skip re-association with track if already associated
+      // if (!track.author_works.includes(paperid)) {
+      //   track.author_works.push(paperid);
+      //   await track.save();
+      // }
 
-      if (!conference.author_works.includes(paperid)) {
-        conference.author_works.push(paperid);
-        await conference.save();
-      }
+      // Skip re-association with conference if already associated
+      // if (!conference.author_works.includes(paperid)) {
+      //   conference.author_works.push(paperid);
+      //   await conference.save();
+      // }
 
-      return res
-        .status(200)
-        .json({ message: "Paper updated successfully", paper: updatedPaper });
+      // Return success response
+      return res.status(200).json({ message: "Paper updated successfully", paper: updatedPaper });
+
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 );
