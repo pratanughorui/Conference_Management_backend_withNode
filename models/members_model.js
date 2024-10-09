@@ -6,16 +6,13 @@ const memberSchema = new mongoose.Schema({
         required: true
     },
     address: {
-        type: String,
-        required: true
+        type: String
     },
     place: {
-        type: String,
-        required: true
+        type: String
     },
     state: {
-        type: String,
-        required: true
+        type: String
     },
     country: {
         type: String,

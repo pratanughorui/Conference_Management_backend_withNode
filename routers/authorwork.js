@@ -135,7 +135,7 @@ router.put(
       // If a new PDF is uploaded, update the file
       if (req.file) {
         // Optional: Delete the old PDF if needed
-        // fs.unlinkSync(paper.pdf);
+         fs.unlinkSync(paper.pdf);
 
         const newPdfLink = await Upload.uploadFile(req.file.path);
         paper.pdf = req.file.filename; // Update the PDF filename
