@@ -144,6 +144,16 @@ router.put(
       paper.title = data.title || paper.title;
       paper.abstract = data.abstract || paper.abstract;
       paper.keywords = data.keywords || paper.keywords;
+      paper.name=data.name || paper.name;
+      paper.affiliation=data.affiliation || paper.affiliation;
+      paper.country=data.country || paper.country;
+      paper.contact_no=data.contact_no || paper.contact_no;
+      paper.contact_no=data.contact_no || paper.contact_no;
+      paper.google_sh_id=data.google_sh_id || paper.google_sh_id;
+      paper.orcid_id=data.orcid_id || paper.orcid_id;
+      
+
+
       // paper.track = trackid;
 
       // Handle co-authors update

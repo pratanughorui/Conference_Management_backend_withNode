@@ -330,7 +330,10 @@ router.get('/getpaperlist/:conid', async (req, res) => {
                 paper_title: element.title,
                 author_name: element.name,
                 pdf: element.pdfLink,
-                coauthor_name: coauthorNames // No extra comma at the end
+                coauthor_name: coauthorNames, // No extra comma at the end
+                affiliation: element.affiliation,
+                abstract: element.abstract,
+                keywords: element.keywords
             };
         
             data.push(temp);
