@@ -90,7 +90,7 @@ router.post('/sendMails/:trackId', async (req, res) => {
         // res.send(acceptLinks+acceptLinks);
         author_work.reviewers.forEach(element => {
             
-           const link=`https://mellow-gnome-9a4d4c.netlify.app/review-paper2?reviewerId=${element._id}&authorWorkId=${author_work._id}`;
+           const link=`https://cms-alpha-sand.vercel.app/review-format?reviewerId=${element._id}&authorWorkId=${author_work._id}`;
           const rejectlink=`http://example.com/reject?reviewerId=${element._id}&authorWorkId=${author_work._id}`;
            const mailOptions = {
             from: process.env.EMAIL,
