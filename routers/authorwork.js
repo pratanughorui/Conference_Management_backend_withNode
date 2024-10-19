@@ -113,7 +113,7 @@ router.post(
   upload.single("pdf"),
   async (req, res) => {
     try {
-      const data = req.body.data;
+      const data = JSON.parse(req.body);
       const { email } = data;
        console.log(data);
        console.log(email);
