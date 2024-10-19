@@ -62,7 +62,7 @@ router.post(
 
         return res
           .status(400)
-          .json({ error: "Author already associated with this conference." });
+          .json({ error: "already associated with this conference." });
       }
 
       const link = await Upload.uploadFile(req.file.path);
