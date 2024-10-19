@@ -3,16 +3,13 @@ const mongoose = require('mongoose');
 
 const paperSchema = new mongoose.Schema({
     name: {
-        type: String,
-        required: true
+        type: String
     },
     affiliation: {
-        type: String,
-        required: true
+        type: String
     },
     country: {
-        type: String,
-        required: true
+        type: String
     },
     contact_no: String,
     email: {
@@ -27,15 +24,13 @@ const paperSchema = new mongoose.Schema({
         default: null  // Optional
     },
     title: {
-        type: String,
-        required: true
+        type: String
     },
     keywords: {
         type: String
     },
     abstract: {
-        type: String,
-        required: true
+        type: String
     },
     pdf: {
         type: String,
