@@ -14,6 +14,8 @@ const paperSchema = new mongoose.Schema({
     contact_no: String,
     email: {
         type: String,
+        required: true
+
     },
     google_sh_id: {
         type: String,
