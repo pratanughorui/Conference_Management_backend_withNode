@@ -113,8 +113,8 @@ router.post(
   upload.single("pdf"),
   async (req, res) => {
     try {
-      const data = JSON.parse(req.body);
-      const { email } = data;
+      const data = JSON.parse(req.body.data);
+      const email=data.email;
        console.log(data);
        console.log(email);
        
@@ -132,6 +132,7 @@ router.post(
         return res.status(404).json({ error: "Track not found" });
       }
        const existingAuthor = await author_work.findOne({ email });
+       return existingAuthor ;
       //  console.log(existingAuthor);
       //   return res
       //   .status(201)
