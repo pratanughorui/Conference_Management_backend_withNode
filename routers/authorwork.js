@@ -130,62 +130,62 @@ router.post(
         return res.status(404).json({ error: "Track not found" });
       }
        const existingAuthor = await author_work.findOne({ email });
-       console.log(existingAuthor);
-        return res
-        .status(201)
-        .json({
-          message: "for testing",
-          test: existingAuthor,
-        });
-       
-
-      // if (
-      //   existingAuthor &&
-      //   conference.author_works.includes(existingAuthor._id)
-      // ) {
-      //   // fs.unlinkSync(req.file.path);
-
+      //  console.log(existingAuthor);
       //   return res
-      //     .status(400)
-      //     .json({ error: "already associated with this conference." });
-      // }
-
-      // const link = await Upload.uploadFile(req.file.path);
-      // // If author doesn't exist, create a new document
-      // const newWork = new author_work({
-      //   ...data,
-      //   pdf: req.file.filename, // Save the PDF filename to the database
-      //   pdfLink: link,
-      //   track: trackid,
-      // });
-
-      // const response = await newWork.save();
-      // console.log("fffff");
-      // track.author_works.push(response._id);
-
-      // //const topic_id = req.params.topicid;
-      // //const topic = await Topic.findById(topic_id);
-      // // res.status(200).json({ message: 'paper submitted successfully' });
-      // // if (!topic) {
-      // //     return res.status(404).json({ error: 'Topic not found' });
-      // // }
-
-      // // // Add the ID of the newly created author work to the topic's author works array
-      // //topic.author_works.push(response._id);
-      // conference.author_works.push(response._id);
-
-      // // await topic.save();
-      // await track.save();
-      // await conference.save();
-
-      // // console.log("Data saved successfully");
-      // //res.status(200).json({ message: 'Tracks added successfully'});
-      // return res
       //   .status(201)
       //   .json({
-      //     message: "paper submitted successfully",
-      //     paper_id: response._id,
+      //     message: "for testing",
+      //     test: existingAuthor,
       //   });
+       
+
+      if (
+        existingAuthor &&
+        conference.author_works.includes(existingAuthor._id)
+      ) {
+        // fs.unlinkSync(req.file.path);
+
+        return res
+          .status(400)
+          .json({ error: "already associated with this conference." });
+      }
+
+      const link = await Upload.uploadFile(req.file.path);
+      // If author doesn't exist, create a new document
+      const newWork = new author_work({
+        ...data,
+        pdf: req.file.filename, // Save the PDF filename to the database
+        pdfLink: link,
+        track: trackid,
+      });
+
+      const response = await newWork.save();
+      console.log("fffff");
+      track.author_works.push(response._id);
+
+      //const topic_id = req.params.topicid;
+      //const topic = await Topic.findById(topic_id);
+      // res.status(200).json({ message: 'paper submitted successfully' });
+      // if (!topic) {
+      //     return res.status(404).json({ error: 'Topic not found' });
+      // }
+
+      // // Add the ID of the newly created author work to the topic's author works array
+      //topic.author_works.push(response._id);
+      conference.author_works.push(response._id);
+
+      // await topic.save();
+      await track.save();
+      await conference.save();
+
+      // console.log("Data saved successfully");
+      //res.status(200).json({ message: 'Tracks added successfully'});
+      return res
+        .status(201)
+        .json({
+          message: "paper submitted successfully",
+          paper_id: response._id,
+        });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error" });
