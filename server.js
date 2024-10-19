@@ -12,7 +12,7 @@ require('dotenv').config();
 app.use(cors({
     origin: function (origin, callback) {
         // Replace this with your own logic to check the origin
-        if (origin === process.env.FRONTURL || origin === 'http://localhost:5173') {
+        if (!origin || origin === process.env.FRONTURL || origin === 'http://localhost:5173') {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));

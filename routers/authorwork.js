@@ -132,7 +132,7 @@ router.post(
         return res.status(404).json({ error: "Track not found" });
       }
        const existingAuthor = await author_work.findOne({ email });
-       return existingAuthor ;
+       res.status(200).json({ error: existingAuthor });
       //  console.log(existingAuthor);
       //   return res
       //   .status(201)
