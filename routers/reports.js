@@ -289,6 +289,7 @@ router.get('/getreviewers/:conid',async(req,res)=>{
            
             element.reviewers.forEach(rev=>{
                 const temp={
+                    reviewer_id:element._id,
                     track_name:element.track_name,
                     name:rev.name,
                     affiliation:rev.affiliation,
